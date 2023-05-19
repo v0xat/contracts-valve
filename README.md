@@ -11,7 +11,9 @@ Deployment instructions described in [Deployment.md](scripts/Deployment.md)
    - The sum of all percentages must always be equal to 100% percentageSum == 10000000
 1. Every native cryptocurrency sent to this contract address will be redistributed according to the rules either in real-time or manually, as determined by setting the isAutoNativeCurrencyDistribution to true of false.
 1. Every ERC-20 token must be manually redistributed using the redistributeToken() method.
-1. The contract must always redistribute 100% of the tokens between recipients, and it is not possible to have a contract without recipients or with less than 100% shares assigned.
+1. The contract must always redistribute 100% of the tokens between recipients, and it is not possible to have a contract without recipients or with less than 100% shares assigned. Since solidity does not have floating point numbers, it is impossible to achieve exact values when dividing numbers. This leads to the fact that in very rare cases part of the tokens will remain on the balance of the smart contract until the next redistribution.
+Example: recipient percentages(33%, 33%, 33%, 1%); amount to distribute 1111.111111111111111111.
+As a result, there will be a balance of 0.000000000000000002 ether left on the contract after distribution.
 1. The distribution of native cryptocurrency and ERC-20 tokens can only be done by the one of the distributors. Distributors can be added or removed by the owner. However, native cryptocurrency distribution can be done by anyone if isAutoNativeCurrencyDistribution is true.
 1. The recipients can only be changed by the controller and only if `isImmutableRecipients = false` Controller can be changed by the owner of the Valve contract. Owner of the contract can set `isImmutableRecipients` on contract creation. If upon initialisation `isImmutableRecipients` is false, then at some point the owner can “lock recipients“ - make them immutable - by setting `isImmutableRecipients = true;`
 1. If `isImmutableRecipients = true`, then: recipients can NOT be changed and `isImmutableRecipients` CAN’T be set to false.
